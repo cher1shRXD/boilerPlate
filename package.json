@@ -1,0 +1,24 @@
+{
+  "name": "cher1sh-react-app",
+  "version": "1.0.0",
+  "description": "cher1shRXD's react boiler-plate",
+  "main": "generate-app",
+  "bin": {
+    "cher1sh-react-app": "bin/generate-app.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cher1shRXD/boilerPlate.git"
+  },
+  "author": "cher1shRXD",
+  "license": "MIT",
+  "homepage": "https://github.com/cher1shRXD/boilerPlate#readme",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^12.1.0",
+    "execa": "^9.3.1"
+  }
+}
