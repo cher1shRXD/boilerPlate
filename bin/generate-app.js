@@ -16,11 +16,21 @@ if (process.argv.length < 3) {
 
 const projectName = process.argv[2];
 const currentPath = process.cwd();
-const projectPath = path.join(currentPath, projectName);
+const projectPath =
+  projectName === "." ? currentPath : path.join(currentPath, projectName);
 const GIT_REPO = "https://github.com/cher1shRXD/cher1sh-react-app";
 
 async function main() {
   try {
+    if (fs.existsSync(projectPath) && projectName !== ".") {
+      console.log(
+        chalk.red(
+          `The directory ${projectName} already exists. Please give it another name.`
+        )
+      );
+      process.exit(1);
+    }
+
     console.log(chalk.blue("Downloading files..."));
     execSync(`git clone --depth 1 ${GIT_REPO} ${projectPath}`);
 
@@ -36,7 +46,9 @@ async function main() {
     execSync("npx rimraf ./.git");
 
     console.log(
-      chalk.cyan(`cher1sh-react-app ${projectName} has been created successfully.`)
+      chalk.cyan(
+        `cher1sh-react-app ${projectName} has been created successfully.`
+      )
     );
   } catch (error) {
     console.log(chalk.red(error));
