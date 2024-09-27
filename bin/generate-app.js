@@ -17,12 +17,16 @@ if (process.argv.length < 3) {
 const projectName = process.argv[2];
 const currentPath = process.cwd();
 const projectPath =
-  projectName === "." ? currentPath : path.join(currentPath, projectName);
+  projectName === "." || projectName === "./"
+    ? currentPath
+    : path.join(currentPath, projectName);
 const GIT_REPO = "https://github.com/cher1shRXD/cher1sh-react-app";
 
 async function main() {
   try {
-    if (fs.existsSync(projectPath) && projectName !== ".") {
+    if (projectName === "." || projectName === "./") {
+      console.log(chalk.blue("Creating project in the current directory..."));
+    } else if (fs.existsSync(projectPath)) {
       console.log(
         chalk.red(
           `The directory ${projectName} already exists. Please give it another name.`
@@ -34,15 +38,14 @@ async function main() {
     console.log(chalk.blue("Downloading files..."));
     execSync(`git clone --depth 1 ${GIT_REPO} ${projectPath}`);
 
-    if (projectName !== ".") {
+    if (projectName !== "." && projectName !== "./") {
       process.chdir(projectPath);
     }
 
     console.log(chalk.blue("Installing dependencies..."));
+    execSync("npm install", { stdio: "inherit" });
 
-    execSync("npm install");
-
-    console.log(chalk.blue("Removing useless files"));
+    console.log(chalk.blue("Removing useless files..."));
     execSync("npx rimraf ./.git");
 
     console.log(
