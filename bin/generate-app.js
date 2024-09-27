@@ -19,24 +19,6 @@ const currentPath = process.cwd();
 const projectPath = path.join(currentPath, projectName);
 const GIT_REPO = "https://github.com/cher1shRXD/cher1sh-react-app";
 
-if (projectName !== ".") {
-  try {
-    fs.mkdirSync(projectPath);
-  } catch (err) {
-    if (err.code === "EEXIST") {
-      console.log(projectName);
-      console.log(
-        chalk.red(
-          `The file ${projectName} already exists in the current directory, please give it another name.`
-        )
-      );
-    } else {
-      console.log(chalk.red(error));
-    }
-    process.exit(1);
-  }
-}
-
 async function main() {
   try {
     console.log(chalk.blue("Downloading files..."));
