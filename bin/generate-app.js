@@ -20,6 +20,7 @@ const projectPath =
   projectName === "." || projectName === "./"
     ? currentPath
     : path.join(currentPath, projectName);
+const tempPath = path.join(currentPath, "temp-clone");
 const GIT_REPO = "https://github.com/cher1shRXD/cher1sh-react-app";
 
 async function main() {
@@ -35,8 +36,17 @@ async function main() {
       process.exit(1);
     }
 
-    console.log(chalk.blue("Downloading files..."));
-    execSync(`git clone --depth 1 ${GIT_REPO} ${projectPath}`);
+    console.log(chalk.blue("Downloading files to a temporary directory..."));
+    execSync(`git clone --depth 1 ${GIT_REPO} ${tempPath}`, {
+      stdio: "inherit",
+    });
+
+    console.log(chalk.blue("Copying files to the project directory..."));
+    execSync(`cp -r ${tempPath}/* ${projectPath}`, { stdio: "inherit" });
+    execSync(`cp -r ${tempPath}/.[^.]* ${projectPath}`, { stdio: "inherit" }); // Copy hidden files
+
+    console.log(chalk.blue("Removing temporary directory..."));
+    execSync(`rm -rf ${tempPath}`, { stdio: "inherit" });
 
     if (projectName !== "." && projectName !== "./") {
       process.chdir(projectPath);
@@ -46,7 +56,7 @@ async function main() {
     execSync("npm install", { stdio: "inherit" });
 
     console.log(chalk.blue("Removing useless files..."));
-    execSync("npx rimraf ./.git");
+    execSync("npx rimraf ./.git", { stdio: "inherit" });
 
     console.log(
       chalk.cyan(
