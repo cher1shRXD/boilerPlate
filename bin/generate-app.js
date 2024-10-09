@@ -6,31 +6,24 @@ const { execSync } = require("child_process");
 const path = require("path");
 const chalk = require("chalk");
 const fs = require("fs");
-const readline = require("readline");
 
 if (process.argv.length < 3) {
   console.log(chalk.red("You have to provide a name to your app."));
   console.log("For example :");
-  console.log(chalk.green("    npx create-my-boilerplate my-app"));
+  console.log(
+    chalk.green("    npx create-my-boilerplate my-app <git-repo-url>")
+  );
   process.exit(1);
 }
 
 const projectName = process.argv[2];
+const gitRepo =
+  process.argv[3] || "https://github.com/cher1shRXD/cher1sh-react-app"; // 기본 레포지토리 설정
 const currentPath = process.cwd();
 const projectPath =
   projectName === "." || projectName === "./"
     ? currentPath
     : path.join(currentPath, projectName);
-
-// 사용자 입력을 받기 위한 readline 인터페이스 설정
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-function askQuestion(query) {
-  return new Promise((resolve) => rl.question(query, resolve));
-}
 
 async function main() {
   try {
@@ -44,10 +37,6 @@ async function main() {
       );
       process.exit(1);
     }
-
-    // 사용자에게 Git repository URL 입력받기
-    const gitRepo = await askQuestion("git repository: ");
-    rl.close(); // readline 종료
 
     console.log(chalk.blue("Downloading files..."));
     execSync(`git clone --depth 1 ${gitRepo} ${projectPath}`);
