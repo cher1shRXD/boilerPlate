@@ -18,7 +18,7 @@ if (process.argv.length < 3) {
 
 const projectName = process.argv[2];
 const gitRepo =
-  process.argv[3] || "https://github.com/cher1shRXD/cher1sh-react-app"; // 기본 레포지토리 설정
+  process.argv[3] || "https://github.com/cher1shRXD/cher1sh-react-app";
 const currentPath = process.cwd();
 const projectPath =
   projectName === "." || projectName === "./"
@@ -48,8 +48,11 @@ async function main() {
     console.log(chalk.blue("Installing dependencies..."));
     execSync("npm install", { stdio: "inherit" });
 
-    console.log(chalk.blue("Removing useless files..."));
-    execSync("npx rimraf ./.git");
+    // git 폴더가 존재할 때만 삭제
+    if (fs.existsSync(path.join(projectPath, ".git"))) {
+      console.log(chalk.blue("Removing useless files..."));
+      execSync("npx rimraf ./.git");
+    }
 
     console.log(chalk.blue("Initializing new git repository..."));
     execSync("git init", { stdio: "inherit" });
@@ -63,7 +66,7 @@ async function main() {
       )
     );
   } catch (error) {
-    console.log(chalk.red(error));
+    console.log(chalk.red(error.message));
   }
 }
 

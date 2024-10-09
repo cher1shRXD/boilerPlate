@@ -1,6 +1,6 @@
 {
   "name": "cher1sh-react-app",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "cher1shRXD's react boiler-plate",
   "main": "generate-app",
   "bin": {
