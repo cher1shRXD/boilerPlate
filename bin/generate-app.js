@@ -1,4 +1,4 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 
 "use strict";
 
@@ -10,17 +10,20 @@ const fs = require("fs");
 if (process.argv.length < 3) {
   console.log(chalk.red("You have to provide a name to your app."));
   console.log("For example :");
-  console.log(chalk.green("    npx create-my-boilerplate my-app"));
+  console.log(
+    chalk.green("    npx create-my-boilerplate my-app <git-repo-url>")
+  );
   process.exit(1);
 }
 
 const projectName = process.argv[2];
+const gitRepo =
+  process.argv[3] || "https://github.com/cher1shRXD/cher1sh-react-app";
 const currentPath = process.cwd();
 const projectPath =
   projectName === "." || projectName === "./"
     ? currentPath
     : path.join(currentPath, projectName);
-const GIT_REPO = "https://github.com/cher1shRXD/cher1sh-react-app";
 
 async function main() {
   try {
@@ -36,7 +39,7 @@ async function main() {
     }
 
     console.log(chalk.blue("Downloading files..."));
-    execSync(`git clone --depth 1 ${GIT_REPO} ${projectPath}`);
+    execSync(`git clone --depth 1 ${gitRepo} ${projectPath}`);
 
     if (projectName !== "." && projectName !== "./") {
       process.chdir(projectPath);
@@ -45,8 +48,17 @@ async function main() {
     console.log(chalk.blue("Installing dependencies..."));
     execSync("npm install", { stdio: "inherit" });
 
-    console.log(chalk.blue("Removing useless files..."));
-    execSync("npx rimraf ./.git");
+    // git 폴더가 존재할 때만 삭제
+    if (fs.existsSync(path.join(projectPath, ".git"))) {
+      console.log(chalk.blue("Removing useless files..."));
+      execSync("npx rimraf ./.git");
+    }
+
+    console.log(chalk.blue("Initializing new git repository..."));
+    execSync("git init", { stdio: "inherit" });
+
+    console.log(chalk.blue("Adding remote repository..."));
+    execSync(`git remote add origin ${gitRepo}`, { stdio: "inherit" });
 
     console.log(
       chalk.cyan(
@@ -54,7 +66,7 @@ async function main() {
       )
     );
   } catch (error) {
-    console.log(chalk.red(error));
+    console.log(chalk.red(error.message));
   }
 }
 
